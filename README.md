@@ -126,15 +126,11 @@ A função `resetGame`:
 * [x] Histórico de ações
 * [x] Animações com vídeo
 * [x] Reinício da partida
-* [x] Efeitos sonoros 
+* [x] Efeitos sonoros
+* [x] Responsividade mobile
 
 ---
 
-## 📌 Melhorias Futuras
-
-* [ ] Barra de vida animada
-* [ ] Responsividade mobile
-* [ ] Novos personagens com habilidades distintas
 
 ---
 <!--
