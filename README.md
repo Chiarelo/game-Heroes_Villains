@@ -1,6 +1,7 @@
 # 🕹️ Herói vs Vilão – Jogo em React
 
-Um mini game de turnos com **animações em vídeo**, onde um herói enfrenta um vilão em batalhas dinâmicas. Desenvolvido com **React + Next.js**, o projeto traz lógica de combate, histórico de ações e reinício de partida.
+Um mini game de turnos com animações em vídeo, onde o BRKsEdu enfrenta o Leon do Coisa de Nerd em uma batalha!
+Desenvolvido com React + Next.js, o projeto implementa lógica de combate por turnos, histórico de ações, reinício de partida e barras de vida animadas.
 
 ---
 
