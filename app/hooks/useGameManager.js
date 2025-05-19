@@ -1,7 +1,4 @@
-import { useState } from "react";
-
-const bilada = new Audio("/sounds/bilada.mp3");
-const nilce = new Audio("/sounds/nilce.mp3");
+import { useState, useEffect, useRef } from "react";
 
 export default function useGameManager(setHeroVideoVisible, setLog) {
   const initialHero = { life: 100, name: "BRKsEdu" };
@@ -15,6 +12,16 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
   const [isDefending, setIsDefending] = useState(false);
   const [villainVideoVisible, setVillainVideoVisible] = useState(false);
 
+  const bilada = useRef(null);
+  const nilce = useRef(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      bilada.current = new Audio("/sounds/bilada.mp3");
+      nilce.current = new Audio("/sounds/nilce.mp3");
+    }
+  }, []);
+
   const modifyLife = (target, amount) => {
     const setter = target === "hero" ? setHero : setVillain;
     setter((prev) => ({ ...prev, life: Math.max(0, prev.life + amount) }));
@@ -27,7 +34,7 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
   const actions = {
     attack: () => {
       modifyLife("villain", -10);
-      bilada.play();
+      bilada.current?.play();
       setHeroVideoVisible(true);
       setTimeout(() => setHeroVideoVisible(false), 11000);
       addLog(
@@ -64,7 +71,7 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
       }
 
       modifyLife("hero", -dmg);
-      nilce.play();
+      nilce.current?.play();
       setVillainVideoVisible(true);
       setTimeout(() => setVillainVideoVisible(false), 6000);
       addLog(
