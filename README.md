@@ -1,36 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🕹️ Herói vs Vilão – Jogo em React
 
-## Getting Started
+Um mini game de turnos com **animações em vídeo**, onde um herói enfrenta um vilão em batalhas dinâmicas. Desenvolvido com **React + Next.js**, o projeto traz lógica de combate, histórico de ações e reinício de partida.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Tecnologias Utilizadas
+
+* **React**
+* **Next.js (App Router com `use client`)**
+* **Hooks personalizados**
+* **CSS Modules**
+* **Vídeos MP4 para animações**
+
+---
+
+## 📁 Estrutura de Pastas
+
+```
+app/
+├── components/
+│   └── Character.jsx         # Componente dos personagens
+├── hooks/
+│   └── useGameManager.js     # Hook com a lógica do jogo
+└── page.jsx                  # Página principal
+public/
+└── assets/gifs/              # Vídeos dos personagens
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 📄 Funcionamento Geral
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🎮 Lógica de Turnos
 
-## Learn More
+* O estado `heroTurn` define se é a vez do herói.
+* `handleHeroAction`:
 
-To learn more about Next.js, take a look at the following resources:
+  * Aplica dano ao vilão
+  * Exibe o vídeo do herói
+  * Registra ação no log
+  * Inicia o turno do vilão após delay
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> O vilão ataca automaticamente após o herói, criando a dinâmica de turnos.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### 🧠 Histórico de Ações
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```js
+if (lastAction && log[log.length - 1] !== lastAction) {
+  setLog((prev) => [...prev, lastAction]);
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* `log`: array que armazena as ações da partida
+* `lastAction`: atualizado a cada ataque no `useGameManager`
+
+> Garante que apenas ações novas sejam adicionadas, evitando repetições.
+
+---
+
+### 💥 Controle de Vida
+
+* Herói e vilão têm um campo `hp`
+* Ataques diminuem a vida do oponente
+* Pode ser usado para mostrar barras de vida ou definir fim de jogo
+
+---
+
+### 🎬 Animações em Vídeo
+
+* Cada personagem possui um vídeo (`videoSrc`)
+* Exibição controlada por `heroVideoVisible` e `villainVideoVisible`
+* Vídeos aparecem temporariamente a cada ação
+
+> Substitui animações complexas com uma abordagem simples e impactante.
+
+---
+
+### 🔄 Reinício da Partida
+
+A função `resetGame`:
+
+* Restaura a vida dos personagens
+* Reinicia o turno para o herói
+* Limpa o histórico
+* Oculta os vídeos
+
+> Permite jogar novamente sem recarregar a página.
+
+---
+
+## 🧩 Componentes em Destaque
+
+```jsx
+<Character
+  data={hero}
+  isHero={true}
+  onAction={handleHeroAction}
+  isHeroTurn={heroTurn}
+  showVideo={heroVideoVisible}
+  videoSrc="/assets/gifs/bilada.mp4"
+/>
+
+<Character
+  data={villain}
+  isHero={false}
+  onAction={null}
+  isHeroTurn={false}
+  showVideo={villainVideoVisible}
+  videoSrc="/assets/gifs/leoncofre.mp4"
+/>
+```
+
+* Componente reutilizável para herói e vilão
+* Vídeos são controlados individualmente
+* Somente o herói executa ações com clique
+
+---
+
+## ✅ Funcionalidades Implementadas
+
+* [x] Turnos entre herói e vilão
+* [x] Histórico de ações
+* [x] Animações com vídeo
+* [x] Reinício da partida
+
+---
+
+## 📌 Melhorias Futuras
+
+* [ ] Barra de vida animada
+* [ ] Efeitos sonoros
+* [ ] Responsividade mobile
+* [ ] Novos personagens com habilidades distintas
+
+---
+
+## 📸 Demonstração
+
+> 💡 Adicione aqui um **GIF** ou **link do Vercel** com a demonstração do jogo funcionando.
+
+---
+
+## 🧑‍💻 Autor
+
+Feito por **Vinícius Chiarelo** como parte dos estudos com **React e Next.js**
+🎯 Inspirado por jogos de turno como **Final Fantasy**
+
+---

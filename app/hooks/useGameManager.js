@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useRef } from "react";
 
 export default function useGameManager(setHeroVideoVisible, setLog) {
@@ -33,8 +34,8 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
 
   const actions = {
     attack: () => {
-      modifyLife("villain", -10);
       bilada.current?.play();
+      modifyLife("villain", -10);
       setHeroVideoVisible(true);
       setTimeout(() => setHeroVideoVisible(false), 11000);
       addLog(
