@@ -125,23 +125,24 @@ A função `resetGame`:
 * [x] Histórico de ações
 * [x] Animações com vídeo
 * [x] Reinício da partida
+* [x] Efeitos sonoros 
 
 ---
 
 ## 📌 Melhorias Futuras
 
 * [ ] Barra de vida animada
-* [ ] Efeitos sonoros
 * [ ] Responsividade mobile
 * [ ] Novos personagens com habilidades distintas
 
 ---
-
+<!--
 ## 📸 Demonstração
 
 > 💡 Adicione aqui um **GIF** ou **link do Vercel** com a demonstração do jogo funcionando.
 
 ---
+-->
 
 ## 🧑‍💻 Autor
 
