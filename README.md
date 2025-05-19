@@ -132,7 +132,6 @@ A função `resetGame`:
 ---
 
 
----
 <!--
 ## 📸 Demonstração
 
