@@ -2,8 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 
 export default function useGameManager(setHeroVideoVisible, setLog) {
-  const initialHero = { life: 100, name: "BRKsEdu" };
-  const initialVillain = { life: 100, name: "Leon" };
+  const initialHero = { life: 100, name: "Lara" };
+  const initialVillain = { life: 100, name: "Konstantin" };
 
   const [hero, setHero] = useState(initialHero);
   const [villain, setVillain] = useState(initialVillain);
@@ -11,17 +11,81 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
   const [gameOver, setGameOver] = useState(false);
   const [lastAction, setLastAction] = useState("");
   const [isDefending, setIsDefending] = useState(false);
-  const [villainVideoVisible, setVillainVideoVisible] = useState(false);
+  const [villainImageVisible, setVillainImageVisible] = useState(false);
+  const [winner, setWinner] = useState("");
+  const [heroVideoType, setHeroVideoType] = useState("attack"); // "attack" ou "win"
+  const [showWinVideo, setShowWinVideo] = useState(false);
 
-  const bilada = useRef(null);
-  const nilce = useRef(null);
+  const larita = useRef(null);
+  const heroVideoTimeoutRef = useRef(null);
+  const villainImageTimeoutRef = useRef(null);
+  const turnTimeoutRef = useRef(null);
+  const heroAudioTimeoutRef = useRef(null);
+  const winVideoTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      bilada.current = new Audio("/sounds/bilada.mp3");
-      nilce.current = new Audio("/sounds/nilce.mp3");
+      larita.current = new Audio("/sounds/laritaAudio.mp3");
     }
   }, []);
+
+  // Verifica se o jogo terminou após mudanças na vida dos personagens
+  useEffect(() => {
+    if (hero.life <= 0 && !gameOver) {
+      setGameOver(true);
+      setWinner(villain.name);
+      addLog(`🏆 ${villain.name} venceu a batalha!`);
+      clearAllTimeouts();
+      setHeroVideoVisible(false);
+      setVillainImageVisible(false);
+    } else if (villain.life <= 0 && !gameOver) {
+      setGameOver(true);
+      setWinner(hero.name);
+      addLog(`🏆 ${hero.name} venceu a batalha!`);
+      clearAllTimeouts();
+      setVillainImageVisible(false);
+
+      // Mostrar vídeo de vitória
+      setHeroVideoType("win");
+      setShowWinVideo(true);
+      setHeroVideoVisible(true);
+
+      // Para o vídeo de vitória após 6 segundos
+      winVideoTimeoutRef.current = setTimeout(() => {
+        setShowWinVideo(false);
+        setHeroVideoVisible(false);
+      }, 6000);
+    }
+  }, [hero.life, villain.life, gameOver, hero.name, villain.name]);
+
+  const clearAllTimeouts = () => {
+    if (heroVideoTimeoutRef.current) {
+      clearTimeout(heroVideoTimeoutRef.current);
+      heroVideoTimeoutRef.current = null;
+    }
+    if (villainImageTimeoutRef.current) {
+      clearTimeout(villainImageTimeoutRef.current);
+      villainImageTimeoutRef.current = null;
+    }
+    if (turnTimeoutRef.current) {
+      clearTimeout(turnTimeoutRef.current);
+      turnTimeoutRef.current = null;
+    }
+    if (heroAudioTimeoutRef.current) {
+      clearTimeout(heroAudioTimeoutRef.current);
+      heroAudioTimeoutRef.current = null;
+    }
+    if (winVideoTimeoutRef.current) {
+      clearTimeout(winVideoTimeoutRef.current);
+      winVideoTimeoutRef.current = null;
+    }
+
+    // Para os áudios se estiverem tocando
+    if (larita.current) {
+      larita.current.pause();
+      larita.current.currentTime = 0;
+    }
+  };
 
   const modifyLife = (target, amount) => {
     const setter = target === "hero" ? setHero : setVillain;
@@ -34,12 +98,26 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
 
   const actions = {
     attack: () => {
-      bilada.current?.play();
-      modifyLife("villain", -10);
+      if (larita.current) {
+        larita.current.pause();
+        larita.current.currentTime = 0;
+        larita.current.play();
+      }
+      modifyLife("villain", -15);
+      setHeroVideoType("attack");
       setHeroVideoVisible(true);
-      setTimeout(() => setHeroVideoVisible(false), 11000);
+
+      // Para o vídeo e áudio do herói após 4 segundos
+      heroVideoTimeoutRef.current = setTimeout(() => {
+        setHeroVideoVisible(false);
+        if (larita.current) {
+          larita.current.pause();
+          larita.current.currentTime = 0;
+        }
+      }, 4000);
+
       addLog(
-        `${hero.name} deu uma surra de bilada no ${villain.name}, causando 10 de dano.`
+          `${hero.name} te caçou como um animal selvagem  ${villain.name}, causando 10 de dano.`
       );
     },
     defense: () => {
@@ -53,6 +131,7 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
     flee: () => {
       addLog(`${hero.name} fugiu da batalha.`);
       setGameOver(true);
+      setWinner(villain.name);
     },
   };
 
@@ -62,8 +141,13 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
     actions[action]?.();
     setIsHeroTurn(false);
 
-    setTimeout(() => {
-      if (action === "flee") return;
+    // Se fugiu, não executa o turno do vilão
+    if (action === "flee") return;
+
+    // Turno do vilão após 4 segundos
+    turnTimeoutRef.current = setTimeout(() => {
+      // Verifica se o jogo ainda não terminou antes de executar o turno do vilão
+      if (gameOver || villain.life <= 0) return;
 
       let dmg = 15;
       if (isDefending) {
@@ -72,27 +156,46 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
       }
 
       modifyLife("hero", -dmg);
-      nilce.current?.play();
-      setVillainVideoVisible(true);
-      setTimeout(() => setVillainVideoVisible(false), 6000);
+
+      // Mostrar imagem do vilão atacando
+      setVillainImageVisible(true);
+
+      // Esconder a imagem do vilão após 2 segundos
+      villainImageTimeoutRef.current = setTimeout(() => {
+        setVillainImageVisible(false);
+      }, 2000);
+
       addLog(
-        `${villain.name} deu uma surra de NILCE!!! no ${hero.name} causando ${dmg} de dano.`
+          `${villain.name} ncontrou o seu destino ${hero.name} causando ${dmg} de dano.`
       );
       setIsHeroTurn(true);
-    }, 11000);
+    }, 4000);
   };
 
   const resetGame = () => {
+    // Limpa todos os timeouts antes de resetar
+    clearAllTimeouts();
+
     setHero(initialHero);
     setVillain(initialVillain);
     setIsHeroTurn(true);
     setLastAction("");
     setGameOver(false);
+    setWinner("");
     setIsDefending(false);
     setHeroVideoVisible(false);
-    setVillainVideoVisible(false);
+    setVillainImageVisible(false);
+    setShowWinVideo(false);
+    setHeroVideoType("attack");
     setLog([]);
   };
+
+  // Cleanup dos timeouts quando o componente for desmontado
+  useEffect(() => {
+    return () => {
+      clearAllTimeouts();
+    };
+  }, []);
 
   return {
     hero,
@@ -101,6 +204,10 @@ export default function useGameManager(setHeroVideoVisible, setLog) {
     heroTurn: isHeroTurn,
     resetGame,
     lastAction,
-    villainVideoVisible,
+    villainImageVisible,
+    gameOver,
+    winner,
+    heroVideoType,
+    showWinVideo,
   };
 }
