@@ -165,29 +165,6 @@ if (lastAction && log[log.length - 1] !== lastAction) {
 
 ---
 
-## 🎯 Próximas Funcionalidades
-
-- [ ] Sistema de níveis e experiência
-- [ ] Múltiplos personagens jogáveis
-- [ ] Habilidades especiais com cooldown
-- [ ] Modo multiplayer local
-- [ ] Sistema de conquistas
-- [ ] Salvamento de progresso
-
----
-
-## 🤝 Contribuindo
-
-Contribuições são sempre bem-vindas! Para contribuir:
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
----
-
 ## 📝 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
@@ -198,12 +175,6 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 **Vinícius Chiarelo**
 
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
-- LinkedIn: [Seu Nome](https://linkedin.com/in/seu-perfil)
+- LinkedIn: [Seu Nome](https://linkedin.com/in/chiarelo)
 
 ---
-
-<p align="center">
-  Feito com ❤️ como parte dos estudos com React e Next.js<br>
-  🎯 Inspirado por jogos de turno clássicos como Final Fantasy
-</p>
